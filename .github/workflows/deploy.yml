@@ -14,14 +14,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Decode GCP Credentials
+      - name: Decode GCP Credentials from GitHub Secret (base64)
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > ${{ github.workspace }}/gcp-key.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > ${{ github.workspace }}/key.json
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json_path: '${{ github.workspace }}/gcp-key.json'
+          credentials_json: '${{ github.workspace }}/key.json'
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v1
