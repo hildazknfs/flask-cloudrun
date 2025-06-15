@@ -1,26 +1,24 @@
+# .github/workflows/deploy.yml
+
 name: Deploy Flask App
 
 on:
   push:
-    branches: [main]
-    
-  workflow_dispatch:
-
+    branches: [main] 
+  workflow_dispatch:  
 jobs:
-  build:
+  build-and-run:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Build
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t flask-todo-app .
+        run: docker build -t exercise-2 .
 
-      - name: Run container (for testing only)
-        run: docker run -d -p 5000:5000 flask-todo-app
-
-      
+      - name: Run container (for testing only, not production)
+        run: docker run -d -p 5000:5000 exercise-2
