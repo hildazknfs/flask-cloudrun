@@ -1,6 +1,4 @@
-# .github/workflows/deploy.yml
-
-name: Deploy Flask App
+name: CI/CD - Flask Docker App
 
 on:
   push:
@@ -8,26 +6,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-run:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
         run: docker build -t exercise-2 .
 
-      - name: Run container (for testing only)
-        run: docker run -d -p 5000:5000 --name flask-container exercise-2
+      - name: Run container
+        run: docker run -d -p 5000:5000 --name flask-app exercise-2
 
-      - name: Wait for Flask to be ready
+      - name: Wait for Flask to start
         run: sleep 5
 
       - name: Test /tasks endpoint
         run: |
-          echo "Testing endpoint..."
-          curl -s http://localhost:5000/tasks
+          echo "Testing Flask /tasks endpoint..."
+          curl --fail http://localhost:5000/tasks
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop flask-app
+          docker rm flask-app
