@@ -5,7 +5,8 @@ app = Flask(__name__)
 tasks = [
     {"id": 1, "task": "Learning DevOps"},
     {"id": 2, "task": "Making CI/CD Pipeline"},
-    {"id": 3, "task": "Testing Push on GitHub Actions"}
+    {"id": 3, "task": "Testing Push on GitHub Actions"},
+    {"id": 4, "task": "Deploying Flask App"}
 ]
 
 @app.route('/tasks', methods=['GET'])
