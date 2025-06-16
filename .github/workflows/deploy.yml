@@ -3,7 +3,7 @@ name: Build and Push Docker to Artifact Registry
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:
