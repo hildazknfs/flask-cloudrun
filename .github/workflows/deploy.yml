@@ -2,40 +2,42 @@ name: Deploy to Cloud Run
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
+    name: Build & Deploy to Cloud Run
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+
+      - name: Decode GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > $HOME/gcp-key.json
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+          token_format: 'access_token'
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
 
       - name: Build Docker image
-        run: |
-          docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2 .
+        run: docker build -t asia-southeast2-docker.pkg.dev/github-actions-deployer-463016/exercise-2/exercise-2 .
 
-      - name: Push Docker image to Artifact Registry
-        run: |
-          docker push asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2
+      - name: Push Docker image
+        run: docker push asia-southeast2-docker.pkg.dev/github-actions-deployer-463016/exercise-2/exercise-2
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy exercise-2 \
-            --image=asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2 \
+            --image=asia-southeast2-docker.pkg.dev/github-actions-deployer-463016/exercise-2/exercise-2 \
+            --region=asia-southeast2 \
             --platform=managed \
-            --region=${{ secrets.GCP_REGION }} \
             --allow-unauthenticated \
-            --project=${{ secrets.GCP_PROJECT_ID }}
+            --project=github-actions-deployer-463016
