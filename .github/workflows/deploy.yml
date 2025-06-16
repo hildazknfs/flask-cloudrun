@@ -10,32 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Decode GCP credentials
-        run: echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > "${{ github.workspace }}/key.json"
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+        export_default_credentials: true
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          service_account_key: "${{ github.workspace }}/key.json"
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          export_default_credentials: true
+    - name: Authenticate Docker with Artifact Registry (Jakarta)
+      run: |
+        gcloud auth configure-docker asia-southeast2-docker.pkg.dev
 
-      - name: Configure Docker to use gcloud as a credential helper
-        run: gcloud auth configure-docker
+    - name: Build Docker image
+      run: |
+        docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2 .
 
-      - name: Build Docker image
-        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/exercise-2 .
+    - name: Push Docker image to Artifact Registry
+      run: |
+        docker push asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2
 
-      - name: Push Docker image to GCR
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/exercise-2
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy exercise-2 \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/exercise-2 \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --allow-unauthenticated
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy exercise-2 \
+          --image asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/exercise-2/exercise-2 \
+          --platform managed \
+          --region asia-southeast2 \
+          --allow-unauthenticated
