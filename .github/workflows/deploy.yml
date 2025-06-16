@@ -35,3 +35,12 @@ jobs:
       - name: Push Docker image
         run: |
           docker push asia-southeast2-docker.pkg.dev/github-actions-deployer-463016/exercise-2/exercise-2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy exercise-2 \
+            --image=asia-southeast2-docker.pkg.dev/github-actions-deployer-463016/exercise-2/exercise-2 \
+            --platform=managed \
+            --region=asia-southeast2 \
+            --allow-unauthenticated \
+            --project=github-actions-deployer-463016
