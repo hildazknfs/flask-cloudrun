@@ -48,7 +48,7 @@ This project contains a Flask app with a `/tasks` endpoint. The app is container
 ## Project Structure
 
 ```plaintext
-exercise-2/
+flask-cloudrun-cicd/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml        # GitHub Actions workflow
@@ -76,8 +76,8 @@ exercise-2/
 To run the Flask app locally:
 
 ```bash
-git clone https://github.com/your-username/exercise-2.git
-cd exercise-2
+git clone https://github.com/your-username/flask-cloudrun-cicd.git
+cd flask-cloudrun-cicd
 pip install -r requirements.txt
 python app.py
 ```
@@ -91,8 +91,8 @@ Visit: [http://localhost:8080/tasks](http://localhost:8080/tasks)
 To run with Docker:
 
 ```bash
-docker build -t exercise-2 .
-docker run -p 8080:8080 exercise-2
+docker build -t flask-cloudrun-cicd .
+docker run -p 8080:8080 flask-cloudrun-cicd
 ```
 
 ---
