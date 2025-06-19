@@ -1,6 +1,6 @@
 # Flask App Deployment with CI/CD on Google Cloud Run
 
-This project shows how to create, containerize, and deploy a simple Flask API to Google Cloud Run using GitHub Actions for automated deployment.
+This project is made to show how to create, containerize, and deploy a simple Flask API to Google Cloud Run using GitHub Actions for automated deployment.
 
 ---
 
